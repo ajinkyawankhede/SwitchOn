@@ -1,5 +1,5 @@
 
-
+const uri = 'mongodb+srv://switchon:<password>@cluster0.rfvtn.mongodb.net/test?retryWrites=true&w=majority'
 module.exports = {
 
     secrets: {
@@ -8,6 +8,6 @@ module.exports = {
     },
 
     db:{
-        URI: 'mongodb://localhost:27017/forms'
+        URI: uri
     }
 }
