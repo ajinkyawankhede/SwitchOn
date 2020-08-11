@@ -79,7 +79,7 @@ server.listen(config.port, function () {
     app.get("env")
   );
 });
-app.use(express.static(__dirname, "/public"));
+app.use(express.static(path.join(__dirname, "../public")));
 
 //  app.ws('/', function(ws, req) {
 //   ws.on('message', function(msg) {
