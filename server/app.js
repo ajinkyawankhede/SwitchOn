@@ -1,39 +1,36 @@
-"use strict";
-
-
 // Set default node environment to development
-const PORT = process.env.VENDOR_NODE_ENV || 8800;
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const path = require('path');
-const http = require('http');
-const axios = require('axios')
-const express = require('express');
+const PORT = process.env.PORT || 8800;
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const path = require("path");
+const http = require("http");
+const axios = require("axios");
+const express = require("express");
 const app = express();
-const server = require('http').createServer(app);
+const server = require("http").createServer(app);
+const config = require("./config").get(process.env.NODE_ENV);
 // var expressWs = require('express-ws')(app);
 
-var io = require('socket.io')
+var io = require("socket.io");
 const socketIo = io(server);
-exports = module.exports = socketIo
-const mongoose = require('mongoose');
-const apiRoutes = require('./route');
+exports = module.exports = socketIo;
+const mongoose = require("mongoose");
+const apiRoutes = require("./route");
 
 //Connect to database
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://127.0.0.1:27017/forms');
+mongoose.connect(config.database);
 
-mongoose.connection.on('error', function (err) {
-  console.error('MongoDB connection error: ' + err);
-  process.exit(-1)
+mongoose.connection.on("error", function (err) {
+  console.error("MongoDB connection error: " + err);
+  process.exit(-1);
 });
 
-
 app.use(
-    cors({
-        origin: true,
-        credentials: true
-    })
+  cors({
+    origin: true,
+    credentials: true,
+  })
 );
 // app.use(cors())
 // app.use(function (req, res, next) {
@@ -54,30 +51,35 @@ app.use(
 //   // Pass to next layer of middleware
 //   next();
 // });
-app.use(bodyParser.urlencoded({
-  extended: false,
-  limit: '50mb'
-}));
-app.use(bodyParser.json({
-  limit: '50mb'
-}));
-app.use('/api', apiRoutes)
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+    limit: "50mb",
+  })
+);
+app.use(
+  bodyParser.json({
+    limit: "50mb",
+  })
+);
+app.use("/api", apiRoutes);
 
-
-require('./config/express')(app);
+require("./config/express")(app);
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 // app.use('/', view);
 
-
 // Start server
-server.listen(PORT, function () {
-  console.log('Express server listening on %d, in %s mode', process.env.PORT, app.get('env'));
+server.listen(config.port, function () {
+  console.log(
+    "Express server listening on %d, in %s mode",
+    process.env.PORT,
+    app.get("env")
+  );
 });
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, "public")));
 
 //  app.ws('/', function(ws, req) {
 //   ws.on('message', function(msg) {
@@ -89,8 +91,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   var name = 'hello';
 //   res.render(__dirname + "/public/index", {name:name});
 // });
-
-
 
 // Expose app
 exports = module.exports = app;
