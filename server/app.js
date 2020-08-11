@@ -75,11 +75,11 @@ app.set("view engine", "ejs");
 server.listen(config.port, function () {
   console.log(
     "Express server listening on %d, in %s mode",
-    process.env.PORT,
+    config.port,
     app.get("env")
   );
 });
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(__dirname, "/public"));
 
 //  app.ws('/', function(ws, req) {
 //   ws.on('message', function(msg) {
